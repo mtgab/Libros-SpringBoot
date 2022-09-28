@@ -29,6 +29,6 @@ public class Libro {
     @Column(name="precio_en_pesos")
     private Double precio;
 
-    @Column(name="precio_en_usd")
+    @Transient
     Double precioDolar;
 }
