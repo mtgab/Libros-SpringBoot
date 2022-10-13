@@ -4,9 +4,12 @@ import com.example.Libros.entities.Libro;
 import com.example.Libros.entities.DolarAPI;
 import com.example.Libros.services.DolarService;
 import com.example.Libros.services.LibroService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,23 +26,15 @@ public class LibroController {
     public LibroController() throws IOException {
     }
 
-
-    /*
-    Mostrar todos los libros
-    */
-
+    @ApiOperation("Obtener todos los libros")
     @GetMapping("/libros")
     public List<Libro> mostrarTodos () {
         return libroService.mostrarTodos();
     }
 
-
-    /*
-    Mostrar un libro
-    */
-
+    @ApiOperation("Buscar un libro por id")
     @GetMapping("/libros/{id}")
-    public ResponseEntity<Libro> mostrarUno (@PathVariable Long id) {
+    public ResponseEntity<Libro> mostrarUno ( @ApiParam("Id: ") @PathVariable Long id ) {
         Libro libro = libroService.mostrarUno(id);
         if(libro != null) {
             libro.setPrecioDolar(libro.getPrecio() / precioDolar.getVenta());
@@ -48,21 +43,15 @@ public class LibroController {
         return ResponseEntity.notFound().build();
     }
 
-    /*
-    Guardar un nuevo libro
-    */
-
+    @ApiOperation("Guardar un nuevo libro")
     @PostMapping("/libros")
     public ResponseEntity guardarLibro (@RequestBody Libro libro) {
         return ResponseEntity.ok(libroService.guardarLibro(libro));
     }
 
-    /*
-    Modificar libro
-    */
-
+    @ApiOperation("Modificar un libro")
     @PutMapping("/libros/{id}")
-    public ResponseEntity modificar (@RequestBody Libro libro, @PathVariable Long id) {
+    public ResponseEntity modificarLibro(@RequestBody Libro libro, @PathVariable Long id) {
         Libro libro1 = libroService.modificar(libro,id);
         if(libro1 != null) {
             libroService.modificar(libro1,id);
@@ -71,10 +60,7 @@ public class LibroController {
         return ResponseEntity.notFound().build();
     }
 
-    /*
-    Borrado lógico
-    */
-
+    @ApiOperation("Borrado lógico de un libro por id")
     @PutMapping("/libros/borradoLogico/{id}")
     public ResponseEntity borradoLogico (@PathVariable Long id) {
         Libro libro = libroService.borradoLogico(id);
@@ -85,9 +71,9 @@ public class LibroController {
     }
 
     /*
-    Borrado físico
+    Borrado físico de un libro por id
     */
-
+    @ApiIgnore
     @DeleteMapping("/libros/borradoFisico/{id}")
     public ResponseEntity borradoFisico (@PathVariable Long id) {
         Boolean borradoSatisfactorio = libroService.borradoFisico(id);
